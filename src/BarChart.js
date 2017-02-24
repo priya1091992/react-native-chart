@@ -9,7 +9,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: 'flex-end',
 		flexDirection: 'row',
-		justifyContent: 'space-around',
 	},
 });
 
@@ -27,16 +26,15 @@ export default class BarChart extends Component<void, any, any> {
 
 	_drawBar = (_dataPoint : [number, number], index : number) => {
 		const [_x, dataPoint] = _dataPoint;
-		const backgroundColor = this.props.color[0] || C.BLUE;
-		// the index [0] is facilitate multi-line, fix later if need be
+		const backgroundColor = this.props.color || C.BLUE;
 		const HEIGHT = this.props.height;
 		const WIDTH = this.props.width;
 		let widthPercent = this.props.widthPercent || 0.5;
 		if (widthPercent > 1) widthPercent = 1;
 		if (widthPercent < 0) widthPercent = 0;
 
-		let minBound = this.props.minVerticalBound;
-		let maxBound = this.props.maxVerticalBound;
+		let minBound = 0;
+		let maxBound = 15;
 
 		// For all same values, create a range anyway
 		if (minBound === maxBound) {
@@ -45,7 +43,7 @@ export default class BarChart extends Component<void, any, any> {
 		}
 
 		const data = this.props.data || [];
-		const width = (WIDTH / data.length * this.props.horizontalScale * 0.5) * widthPercent;
+		const width = 30;
 		const divisor = (maxBound - minBound <= 0) ? 0.00001 : (maxBound - minBound);
 		const scale = HEIGHT / divisor;
 		let height = HEIGHT - ((minBound * scale) + (HEIGHT - (dataPoint * scale)));
@@ -62,6 +60,8 @@ export default class BarChart extends Component<void, any, any> {
 						backgroundColor,
 						width,
 						height,
+						borderWidth: 1,
+						borderColor: 'grey',
 					}}
 				/>
 			</TouchableWithoutFeedback>
@@ -74,6 +74,7 @@ export default class BarChart extends Component<void, any, any> {
 			<View ref="container" style={[styles.default]}>
 				<Grid {...this.props} />
 				{data.map(this._drawBar)}
+
 			</View>
 		);
 	}
